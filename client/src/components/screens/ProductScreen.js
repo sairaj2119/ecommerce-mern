@@ -4,16 +4,19 @@ import { Row, Col, Image, ListGroup, Card, Button } from 'react-bootstrap';
 import axios from 'axios';
 
 import Rating from '../Rating';
+import { BACKEND_URL } from '../../utils/constants';
 
 const ProductScreen = ({ match: { params } }) => {
   const [product, setProduct] = useState({});
 
   useEffect(() => {
     (async () => {
-      const { data } = await axios.get(`/api/products/${params.id}`);
+      const { data } = await axios.get(
+        `${BACKEND_URL}/api/products/${params.id}`
+      );
       setProduct(data);
     })();
-  }, []);
+  }, [params.id]);
 
   return (
     <>

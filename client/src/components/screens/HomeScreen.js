@@ -3,13 +3,14 @@ import { Col, Row } from 'react-bootstrap';
 import axios from 'axios';
 
 import Product from '../Product';
+import { BACKEND_URL } from '../../utils/constants';
 
 const HomeScreen = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
     (async () => {
-      const { data } = await axios.get('/api/products');
+      const { data } = await axios.get(`${BACKEND_URL}/api/products`);
       setProducts(data);
     })();
   }, []);
