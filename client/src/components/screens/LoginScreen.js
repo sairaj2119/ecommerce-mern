@@ -50,7 +50,7 @@ const LoginScreen = () => {
           <Form.Control
             type='password'
             placeholder='Enter Password'
-            value={email}
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
           ></Form.Control>
         </Form.Group>
@@ -62,6 +62,7 @@ const LoginScreen = () => {
         <Col>
           New Customer
           <Link to={redirect ? `/register?redirect=${redirect}` : `/register`}>
+            {' '}
             Register
           </Link>
         </Col>
