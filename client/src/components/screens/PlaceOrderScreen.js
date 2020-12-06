@@ -1,16 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+
 import Message from '../Message';
 import CheckoutSteps from '../CheckoutSteps';
-// import { createOrder } from '../../actions/orderActions';
-import { ORDER_CREATE_RESET } from '../../constants/orderConstants';
-import { USER_DETAILS_RESET } from '../../constants/userConstants';
+import { createOrder } from '../../actions/orderActions';
 
 const PlaceOrderScreen = () => {
   const cart = useSelector((state) => state.cart);
   const history = useHistory();
+  const dispatch = useDispatch();
 
   if (!cart.shippingAddress.address) {
     history.push('/shipping');
@@ -32,7 +32,29 @@ const PlaceOrderScreen = () => {
     Number(cart.taxPrice)
   ).toFixed(2);
 
-  const placeOrderHandler = () => {};
+  const orderCreate = useSelector((state) => state.orderCreate);
+  const { order, success, error } = orderCreate;
+
+  useEffect(() => {
+    if (success) {
+      history.push(`/order/${order._id}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [history, success]);
+
+  const placeOrderHandler = () => {
+    dispatch(
+      createOrder({
+        orderItems: cart.cartItems,
+        shippingAddress: cart.shippingAddress,
+        paymentMethod: cart.paymentMethod,
+        itemsPrice: cart.itemsPrice,
+        shippingPrice: cart.shippingPrice,
+        taxPrice: cart.taxPrice,
+        totalPrice: cart.totalPrice,
+      })
+    );
+  };
   return (
     <>
       <CheckoutSteps step1 step2 step3 step4 />
@@ -118,9 +140,9 @@ const PlaceOrderScreen = () => {
                   <Col>${cart.totalPrice}</Col>
                 </Row>
               </ListGroup.Item>
-              {/* <ListGroup.Item>
+              <ListGroup.Item>
                 {error && <Message variant='danger'>{error}</Message>}
-              </ListGroup.Item> */}
+              </ListGroup.Item>
               <ListGroup.Item>
                 <Button
                   type='button'
